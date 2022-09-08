@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Http\Controllers;
+use App\Models\Author;
+use Illuminate\Http\Request;
+
+class AuthorController extends Controller
+{
+    //
+    public function index()
+    {
+     $authors = Author::all()->sortDesc();
+     return view('index',['authors'=>$authors,'lists'=>Author::all()]);
+ }
+    
+    public function create()
+    {
+    return view('create');
+    }
+    public function store(Request $request){
+        $auth=new Author();
+        $auth->name=$request->aname;
+        $auth->title=$request->title;
+        $auth->des=$request->des;
+        $auth->image=$request->image;
+        $auth->save();
+        return redirect()->route('index')->with('success','Author has been created successfully.');
+
+    }
+    public function show(Author $author)
+    {
+    return view('authors.show',compact('author'));
+    } 
+    public function edit(Author $author)
+    {
+    return view('authors.edit',compact('author'));
+    }
+    public function update(Request $request, $id)
+    {
+    $request->validate([
+    'aname' => 'required',
+    'title' => 'required',
+    'des' => 'required',
+    'image' => 'required'
+    ]);
+    $author = Author::find($id);
+    $author->name = $request->aname;
+    $author->title = $request->title;
+    $author->des = $request->des;
+    $author->image = $request->image;
+    $author->save();
+    return redirect()->route('index')->with('success','Company Has Been updated successfully');
+    }
+    public function destroy(Author $author)
+    {
+    $author->delete();
+    return redirect()->route('index')->with('success','Company has been deleted successfully');
+    }
+        
+    }
+
+    
+
